@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feeling Happy</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background-color: #fff;
+      padding: 20px;
+      width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    h1 {
+      color: #333;
+    }
+    .content {
+      font-size: 1.2rem;
+      color: #333;
+    }
+    .quiz {
+      margin-top: 20px;
+    }
+    .question {
+      margin-bottom: 15px;
+    }
+    .quiz button {
+      padding: 10px 20px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .quiz button:hover {
+      background-color: #45a049;
+    }
+    .result {
+      font-size: 1.5rem;
+      color: #333;
+      margin-top: 20px;
+      display: none;
+    }
+    .progress-container {
+      width: 100%;
+      height: 20px;
+      background-color: #ddd;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background-color: #4caf50;
+      border-radius: 10px;
+    }
+    .timer {
+      font-size: 1.2rem;
+      color: red;
+      margin-top: 20px;
+    }
+    #videoFeed {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 150px;
+      height: auto;
+      border-radius: 10px;
+      border: 2px solid #333;
+      object-fit: cover;
+      z-index: 1000;
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="card">
+    <h1>You're Feeling Happy! 😊</h1>
+
+    <div class="content">
+      <p>Awesome! Let's dive into an advanced quiz on Nuclear Physics!</p>
+      <div class="quiz" id="quizContainer">
+        <div id="question1" class="question">
+          <p>Question 1: What is the liquid drop model of the nucleus?</p>
+          <label><input type="radio" name="q1" value="correct"> A. Nucleus as a liquid drop</label><br>
+          <label><input type="radio" name="q1" value="incorrect"> B. Nucleus as a solid</label><br>
+          <button onclick="submitQuestion(1)">Next</button>
+        </div>
+        <div id="question2" class="question" style="display: none;">
+          <p>Question 2: Which particle is located in the nucleus?</p>
+          <label><input type="radio" name="q2" value="incorrect"> A. Electron</label><br>
+          <label><input type="radio" name="q2" value="correct"> B. Proton</label><br>
+          <button onclick="submitQuestion(2)">Submit Quiz</button>
+        </div>
+      </div>
+      <div class="result" id="result"></div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="timer" id="timer">Time left: 30 seconds</div>
+    </div>
+  </div>
+
+  <video id="videoFeed" autoplay muted></video>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
+
+  <script>
+    let score = 0;
+    let timeoutID;
+    let timer;
+
+    function updateProgressBar(percentage) {
+      const progressBar = document.getElementById("progressBar");
+      progressBar.style.width = `${percentage}%`;
+    }
+
+    function startTimer() {
+      let timeLeft = 30;
+      timer = setInterval(function() {
+        timeLeft--;
+        document.getElementById("timer").textContent = `Time left: ${timeLeft} seconds`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          Swal.fire({
+            icon: 'info',
+            title: 'Time\'s up!',
+            text: 'You ran out of time!',
+            confirmButtonText: 'OK'
+          });
+          displayScore();
+        }
+      }, 1000);
+    }
+
+    function submitQuestion(questionNumber) {
+      clearTimeout(timeoutID);
+      const selectedAnswer = document.querySelector(`input[name="q${questionNumber}"]:checked`);
+      
+      if (selectedAnswer && selectedAnswer.value === "correct") {
+        score++;
+        Swal.fire({
+          icon: 'success',
+          title: 'Correct!',
+          text: 'You chose the right answer!',
+          confirmButtonText: 'Next Question'
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Incorrect!',
+          text: 'The answer was wrong. Try again!',
+          confirmButtonText: 'Next Question'
+        });
+      }
+
+      if (questionNumber === 1) {
+        document.getElementById("question1").style.display = "none";
+        document.getElementById("question2").style.display = "block";
+        updateProgressBar(50);
+      } else if (questionNumber === 2) {
+        displayScore();
+      }
+    }
+
+    function displayScore() {
+      document.getElementById("quizContainer").style.display = "none";
+      const result = document.getElementById("result");
+      result.style.display = "block";
+      result.innerHTML = `Your score is ${score} out of 2!`;
+    }
+
+    window.addEventListener("load", function() {
+      const videoFeed = document.getElementById("videoFeed");
+      navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => {
+          videoFeed.srcObject = stream;
+        })
+        .catch(error => {
+          console.error("Error accessing the camera:", error);
+        });
+
+      startTimer();
+      updateProgressBar(0);
+    });
+
+    timeoutID = setTimeout(function() {
+      Swal.fire({
+        icon: 'warning',
+        title: 'Hurry up!',
+        text: 'You haven\'t finished the quiz yet!',
+        confirmButtonText: 'OK'
+      });
+    }, 10000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMARTLEARN</title>
+    <link rel="stylesheet" href="style1.css"> 
+    <style>
+        .hidden {
+            display: none;
+        }
+        #videoElement {
+            width: 200px;  /* Small size */
+            height: 150px; /* Small size */
+            position: fixed; /* Fix to the right side */
+            right: 20px;  /* Distance from the right edge */
+            top: 20px;    /* Distance from the top edge */
+            border: 2px solid #ccc; /* Optional border */
+            background-color: black;
+        }
+    </style>
+</head>
+<body>
+    <input type="text" id="searchBar" placeholder="Search for videos or text..." />
+    <button id="searchBtn">Search</button>
+
+    <div id="mediaOptions" class="hidden">
+        <button id="showVideoBtn">Show Videos</button>
+        <button id="showTextBtn">Show Text</button>
+    </div>
+
+    <div id="videoSection" class="hidden">
+        <h2>Videos</h2>
+        <video id="examFearVideo" class="videoControl" width="320" height="240" controls>
+            <source src="source1.mp4" type="video/mp4">
+        </video>
+        <video id="vedantuVideo" class="videoControl" width="320" height="240" controls>
+            <source src="source2.mp4" type="video/mp4">
+        </video>
+        <video id="edunitiVideo" class="videoControl" width="320" height="240" controls>
+            <source src="source3.mp4" type="video/mp4">
+        </video>
+        <br>
+        <button id="extractAudioBtn">Extract Audio</button>
+
+        <div id="audioSection" class="hidden">
+            <h2>Audios</h2>
+            <audio controls>
+                <source src="source1.mp3" type="audio/mpeg">
+            </audio>
+            <audio controls>
+                <source src="source2.mp3" type="audio/mpeg">
+            </audio>
+            <audio controls>
+                <source src="source3.mp3" type="audio/mpeg">
+            </audio>
+        </div>
+    </div>
+
+    <div id="textSection" class="hidden">
+        <button id="extractTextBtn">Extract Text</button>
+        <button id="extractColloquialTextBtn">Extract Just Concepts</button>
+
+        <div class="box hidden" id="summaryBox">
+            <h2>Summary</h2>
+            <p>
+                <!-- Your summary text here -->
+            </p>
+        </div>
+        
+        <div class="box hidden" id="colloquialBox">
+            <h2>Concepts Summary</h2>
+            <p> 
+                <!-- Your colloquial text here -->
+            </p>
+        </div>
+    </div>
+
+    <!-- Button to access the camera -->
+    <button id="cameraBtn">Access Camera</button>
+    <video id="videoElement" class="hidden" autoplay></video> <!-- Video element to display the camera feed -->
+
+    <script>
+        // Function to show alert when page visibility changes
+        function handleVisibilityChange() {
+            if (document.hidden) {
+                alert("Hey, it looks like you're not looking at the screen! Please focus on the screen.");
+            }
+        }
+
+        // Event listener for visibility change
+        document.addEventListener("visibilitychange", handleVisibilityChange);
+
+        // Function to go fullscreen
+        function goFullScreen() {
+            let elem = document.documentElement;
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            }
+        }
+
+        document.getElementById('searchBar').addEventListener('focus', function() {
+            goFullScreen(); // Enter fullscreen mode when search bar is focused
+        });
+
+        document.getElementById('searchBtn').addEventListener('click', function() {
+            const query = document.getElementById('searchBar').value.toLowerCase();
+            document.getElementById('mediaOptions').classList.remove('hidden'); // Show media options
+
+            // Hide all sections initially
+            document.getElementById('videoSection').classList.add('hidden');
+            document.getElementById('textSection').classList.add('hidden');
+            document.getElementById('audioSection').classList.add('hidden');
+
+            // Show relevant sections based on the query
+            if (query.includes("video")) {
+                document.getElementById('videoSection').classList.remove('hidden');
+            } else if (query.includes("text")) {
+                document.getElementById('textSection').classList.remove('hidden');
+            }
+        });
+
+        document.getElementById('showVideoBtn').addEventListener('click', function() {
+            document.getElementById('videoSection').classList.remove('hidden');
+            document.getElementById('audioSection').classList.add('hidden');
+            document.getElementById('textSection').classList.add('hidden');
+        });
+
+        document.getElementById('showTextBtn').addEventListener('click', function() {
+            document.getElementById('textSection').classList.remove('hidden');
+            document.getElementById('videoSection').classList.add('hidden');
+            document.getElementById('audioSection').classList.add('hidden');
+        });
+
+        document.getElementById('extractAudioBtn').addEventListener('click', function() {
+            document.getElementById('audioSection').classList.remove('hidden');
+        });
+
+        document.getElementById('extractTextBtn').addEventListener('click', function() {
+            document.getElementById('summaryBox').classList.remove('hidden');
+        });
+
+        document.getElementById('extractColloquialTextBtn').addEventListener('click', function() {
+            document.getElementById('colloquialBox').classList.remove('hidden');
+        });
+
+        // Camera access functionality
+        document.getElementById('cameraBtn').addEventListener('click', function() {
+            // Check if the browser supports camera access
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                // Request camera access
+                navigator.mediaDevices.getUserMedia({ video: true })
+                    .then(function(stream) {
+                        // Get the video element
+                        const videoElement = document.getElementById('videoElement');
+                        
+                        // Display the video stream in the video element
+                        videoElement.srcObject = stream;
+                        videoElement.classList.remove('hidden'); // Show the video element
+
+                        // Optionally, store the stream to stop it later if needed
+                        videoElement.onloadedmetadata = function() {
+                            videoElement.play();
+                        };
+                    })
+                    .catch(function(error) {
+                        alert("Camera access denied or failed: " + error.message);
+                    });
+            } else {
+                alert("Camera not supported on this browser.");
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Emotion Detector</title>
+</head>
+<body>
+    <h1>Emotion Detector</h1>
+    <video id="video" width="640" height="480" autoplay></video>
+    <div id="emotionStatus">Emotion: Detecting...</div>
+
+    <!-- Load TensorFlow.js and face-api.js -->
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/face-api.js"></script>
+
+    <script>
+        // Load face-api.js models
+        async function loadModels() {
+            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+            await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
+        }
+
+        // Access the user's camera
+        async function setupCamera() {
+            const video = document.getElementById('video');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                video.srcObject = stream;
+            } catch (error) {
+                console.error('Error accessing the camera:', error);
+                document.getElementById('emotionStatus').innerText = 'Camera access denied';
+            }
+        }
+
+        // Detect emotions based on facial landmarks
+        async function detectEmotion() {
+            const video = document.getElementById('video');
+
+            // Update every 100 ms
+            setInterval(async () => {
+                const detections = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+                    .withFaceLandmarks();
+
+                if (detections) {
+                    const landmarks = detections.landmarks;
+                    const mouth = landmarks.getMouth();
+                    const leftEye = landmarks.getLeftEye();
+                    const rightEye = landmarks.getRightEye();
+                    const leftEyebrow = landmarks.getLeftEyeBrow();
+                    const rightEyebrow = landmarks.getRightEyeBrow();
+
+                    // Calculate distances and angles
+                    const mouthWidth = mouth[6].x - mouth[0].x;
+                    const mouthHeight = mouth[10].y - mouth[9].y;
+                    const eyeOpenness = (leftEye[4].y - leftEye[1].y + rightEye[4].y - rightEye[1].y) / 2;
+
+                    // Basic emotion detection rules
+                    let emotion = "Neutral";
+                    if (mouthWidth > 50 && mouthHeight > 20) {
+                        emotion = "Happy";
+                    } else if (mouthHeight < 5 && distance(leftEyebrow[0], rightEyebrow[4]) < 30) {
+                        emotion = "Angry";
+                    } else if (mouthHeight > 30 && eyeOpenness > 15) {
+                        emotion = "Surprised";
+                    }
+
+                    // Display detected emotion
+                    document.getElementById('emotionStatus').innerText = `Emotion: ${emotion}`;
+                } else {
+                    document.getElementById('emotionStatus').innerText = 'No face detected';
+                }
+            }, 100);
+        }
+
+        // Utility function to calculate Euclidean distance
+        function distance(point1, point2) {
+            return Math.sqrt((point1.x - point2.x) ** 2 + (point1.y - point2.y) ** 2);
+        }
+
+        // Initialize the camera and detection
+        async function init() {
+            await loadModels();
+            await setupCamera();
+            detectEmotion();
+        }
+
+        // Run initialization
+        init();
+    </script>
+</body>
+</html>

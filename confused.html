@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Chat Assistance</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ff7e5f, #feb47b, #ff9a8b, #8e2de2, #4a00e0);
+      background-size: 400% 400%;
+      animation: gradientBG 10s ease infinite;
+      box-sizing: border-box;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .welcome-container {
+      text-align: center;
+      color: white;
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 20px;
+      display: none; /* Initially hidden */
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 10;
+    }
+
+    .welcome-btn {
+      background-color: #4CAF50;
+      color: white;
+      padding: 15px 25px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .welcome-btn:hover {
+      background-color: #45a049;
+    }
+
+    #chatBox {
+      position: fixed;
+      bottom: 0;
+      right: 20px;
+      width: 320px;
+      height: 450px;
+      background: linear-gradient(145deg, #6fb1fc, #3e7bb6);
+      border-radius: 15px 15px 0 0;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: none;
+      flex-direction: column;
+      transform: translate(-50%, -50%);
+      left: 50%;
+      top: 50%;
+      padding: 10px;
+    }
+
+    #chatHeader {
+      background-color: #2f77b7;
+      color: white;
+      padding: 12px;
+      font-size: 18px;
+      text-align: center;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #chatMessages {
+      flex: 1;
+      padding: 15px;
+      overflow-y: auto;
+      max-height: 300px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    #chatInput {
+      display: flex;
+      padding: 10px;
+      border-top: 1px solid #ddd;
+      background-color: #fafafa;
+      border-radius: 10px;
+    }
+
+    #chatInput input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      margin-right: 10px;
+    }
+
+    #chatInput button {
+      padding: 10px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s;
+    }
+
+    #chatInput button:hover {
+      background-color: #45a049;
+    }
+
+    .message {
+      margin-bottom: 12px;
+      padding: 8px;
+      border-radius: 5px;
+      max-width: 80%;
+    }
+
+    .message.bot {
+      background-color: #d1e7dd;
+      color: #155724;
+      align-self: flex-start;
+      border-radius: 10px 10px 0 10px;
+    }
+
+    .message.user {
+      background-color: #cce5ff;
+      color: #004085;
+      align-self: flex-end;
+      border-radius: 10px 10px 10px 0;
+    }
+
+    #chatToggleBtn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(145deg, #ff6e7f, #d56d9a);
+      color: white;
+      padding: 18px;
+      border-radius: 50%;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      border: none;
+      transition: transform 0.3s;
+    }
+
+    #chatToggleBtn:hover {
+      transform: scale(1.1);
+    }
+
+    #chatToggleBtn:focus {
+      outline: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Welcome Section with Button -->
+  <div class="welcome-container" id="welcomeContainer">
+    <p>Are you okay? Shall we start learning?</p>
+    <a href="page1.html">
+      <button class="welcome-btn">Yes, Let's Start!</button>
+    </a>
+  </div>
+
+  <!-- Chat Button -->
+  <button id="chatToggleBtn" onclick="toggleChatBox()">💬</button>
+
+  <!-- Chat Box -->
+  <div id="chatBox">
+    <div id="chatHeader">
+      Chat with us!
+    </div>
+    <div id="chatMessages"></div>
+    <div id="chatInput">
+      <input type="text" id="userMessage" placeholder="Type your message..." />
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    // Toggle Chat Box visibility
+    function toggleChatBox() {
+      const chatBox = document.getElementById('chatBox');
+      chatBox.style.display = chatBox.style.display === 'none' || chatBox.style.display === '' ? 'flex' : 'none';
+      if (chatBox.style.display === 'flex') {
+        showBotMessage("Hi! How can I assist you today?");
+      }
+    }
+
+    // Simulate bot response
+    function showBotMessage(message) {
+      const chatMessages = document.getElementById('chatMessages');
+      const messageDiv = document.createElement('div');
+      messageDiv.classList.add('message', 'bot');
+      messageDiv.textContent = message;
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    // Handle user input and send bot response
+    function sendMessage() {
+      const userMessage = document.getElementById('userMessage').value.trim();
+      if (userMessage === '') return;
+
+      // Show user's message
+      const chatMessages = document.getElementById('chatMessages');
+      const userMessageDiv = document.createElement('div');
+      userMessageDiv.classList.add('message', 'user');
+      userMessageDiv.textContent = userMessage;
+      chatMessages.appendChild(userMessageDiv);
+
+      // Show bot's response
+      document.getElementById('userMessage').value = '';
+      setTimeout(() => {
+        const botResponse = getBotResponse(userMessage);
+        showBotMessage(botResponse);
+        
+        // After the first chat interaction, show the button
+        document.getElementById('welcomeContainer').style.display = 'block';
+      }, 1000); // Simulate delay
+    }
+
+    // Get bot's response based on user's message
+    function getBotResponse(userMessage) {
+      const lowerMessage = userMessage.toLowerCase();
+
+      if (lowerMessage.includes('confused')) {
+        return "I understand. Could you please tell me what you're confused about? I'll help you out!";
+      } else if (lowerMessage.includes('help')) {
+        return "No worries! I'm here to assist. Let me know how I can help.";
+      } else {
+        return "I'm here to help. Could you please clarify your question?";
+      }
+    }
+  </script>
+
+</body>
+</html>

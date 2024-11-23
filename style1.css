@@ -1,0 +1,117 @@
+/* General page styles */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #ecf0f1; /* Light grey background for readability */
+    color: #2c3e50; /* Dark blue-grey text for contrast */
+    text-align: center;
+}
+
+
+
+/* Box styling */
+.box {
+    background-color: #fff;
+    padding: 25px;
+    margin: 30px auto;
+    max-width: 800px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1); 
+    text-align: left;
+    line-height: 1.8;
+    border-left: 5px solid #2980b9; 
+}
+
+.box h2 {
+    color: #2980b9; /* Bright blue for headings */
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+}
+
+.box strong {
+    color: #e74c3c; /* Red for emphasis */
+    font-weight: 600;
+}
+
+/* Button styling */
+button {
+    margin: 15px;
+    padding: 12px 30px;
+    background-color: #3498db; /* Bright blue button */
+    color: white;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Button shadow */
+}
+
+button:hover {
+    background-color: #1abc9c; /* Light green on hover */
+    transform: translateY(-3px); /* Slight lift on hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+/* Video, Audio, and PDF styling */
+h2 {
+    color: #34495e; /* Darker grey for subheadings */
+    margin-top: 40px;
+    font-size: 2rem;
+}
+
+/* Flexbox container for videos */
+.video-container {
+    display: flex;
+    justify-content: center; /* Center the videos horizontally */
+    gap: 20px; /* Space between videos */
+    flex-wrap: wrap; /* Allow videos to wrap on smaller screens */
+}
+
+.videoControl {
+    border: 3px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1); /* Soft shadow for media */
+}
+
+/* Flexbox container for audios */
+.audio-container {
+    display: flex;
+    justify-content: center; /* Center the audios horizontally */
+    gap: 20px; /* Space between audio elements */
+    flex-wrap: wrap; /* Allow audios to wrap on smaller screens */
+}
+
+audio {
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Shadow for audio elements */
+}
+
+/* Hidden class to hide elements initially */
+.hidden {
+    display: none;
+}
+
+/* Responsive styling for small screens */
+@media (max-width: 768px) {
+    .box {
+        padding: 20px;
+        margin: 20px;
+    }
+
+    video, audio, iframe {
+        width: 100%;
+        height: auto; /* Make media responsive */
+    }
+
+    button {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+}

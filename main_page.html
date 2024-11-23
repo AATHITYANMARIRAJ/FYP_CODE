@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SMARTLEARN</title>
+    <link rel="stylesheet" href="style2.css" />
+</head>
+
+<body>
+    <div id="loading-screen">Loading...</div>
+
+    <div class="container">
+        <h1>WELCOME TO SMARTLEARN</h1>
+        <p>Click on the Subjects Below To Explore</p>
+        <ul>
+            <li><a href="page1.html" class="subject-link">Physics</a></li>
+            <li><a href="page2.html" class="subject-link">Maths</a></li>
+            <li><a href="page3.html" class="subject-link">Chemistry</a></li>
+        </ul>
+    </div>
+
+    <script>
+        window.onload = function () {
+            document.getElementById('loading-screen').style.display = 'none';
+        };
+
+        document.querySelectorAll('.subject-link').forEach(function(link) {
+            link.onclick = function(e) {
+                e.preventDefault();
+                setTimeout(() => {
+                    window.location.href = link.href;
+                }, 500);
+            };
+        });
+    </script>
+</body>
+
+</html>

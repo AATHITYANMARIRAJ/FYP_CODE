@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feeling Sad</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f7f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background-color: #fff;
+      padding: 30px; /* Increased padding */
+      width: 400px; /* Increased width */
+      height: 450px; /* Increased height */
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      overflow: hidden;
+    }
+    h1 {
+      color: #333;
+      font-size: 1.8rem; /* Slightly larger font */
+      margin-bottom: 15px; /* Increased space between title and content */
+    }
+    .content {
+      font-size: 1.2rem; /* Slightly larger font */
+      color: #333;
+      margin-bottom: 15px;
+    }
+    .motivation {
+      margin-top: 15px;
+      display: none;
+    }
+    #videoFeed {
+      width: 100%;
+      height: 180px; /* Increased video height */
+      border-radius: 5px;
+      object-fit: cover;
+    }
+    .timer {
+      font-size: 1.2rem; /* Slightly larger font */
+      color: red;
+      margin-top: 15px;
+    }
+    /* Button styling */
+    .btn {
+      display: inline-block;
+      padding: 14px 22px; /* Larger padding */
+      font-size: 1.2rem; /* Slightly larger font */
+      color: white;
+      background-color: #4CAF50;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 25px; /* Increased margin for spacing */
+      transition: background-color 0.3s ease;
+    }
+    .btn:hover {
+      background-color: #45a049;
+    }
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="card">
+    <h1>You're Feeling Sad 😞</h1>
+    <div class="content">
+      <p>Don't worry! Let's watch a motivational video.</p>
+      <div class="motivation" id="motivationVideo">
+        <video id="videoFeed" autoplay muted>
+          <source src="inspiration.mp4" type="video/mp4">
+          Your browser does not support the video tag.
+        </video>
+        <p>Stay strong, you can do it!</p>
+      </div>
+      <div class="timer" id="timer">Video will redirect you in 30 seconds...</div>
+      <button class="btn" id="skipBtn">Skip Video</button> <!-- Clear button -->
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
+
+  <script>
+    function startVideo() {
+      const videoElement = document.getElementById("videoFeed");
+      const skipButton = document.getElementById("skipBtn");
+
+      videoElement.onended = function() {
+        Swal.fire({
+          icon: 'success',
+          title: 'Feeling Better!',
+          text: 'You\'ve watched the motivational video. Let\'s move to the next page.',
+          confirmButtonText: 'Go to Page 1'
+        }).then(() => {
+          window.location.href = "page1.html"; // Redirect after video ends
+        });
+      };
+
+      const timerElement = document.getElementById("timer");
+      let timeLeft = 30;
+      const countdown = setInterval(function() {
+        timeLeft--;
+        timerElement.textContent = `Video will redirect you in ${timeLeft} seconds...`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(countdown);
+          window.location.href = "page1.html"; // Redirect after 30 seconds
+        }
+      }, 1000);
+
+      // Skip button functionality
+      skipButton.addEventListener('click', function() {
+        clearInterval(countdown);
+        window.location.href = "page1.html"; // Redirect when the user clicks "Skip Video"
+      });
+    }
+
+    window.addEventListener("load", function() {
+      document.getElementById("motivationVideo").style.display = "block";
+      startVideo();
+    });
+  </script>
+</body>
+</html>

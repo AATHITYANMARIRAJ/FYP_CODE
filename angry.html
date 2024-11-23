@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feeling Angry</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+      background-color: #ffcccb;
+    }
+    .content {
+      font-size: 1.5rem;
+      color: #333;
+    }
+    .quiz {
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>You're Feeling Angry 😡</h1>
+  <div class="content">
+    <p>Let's cool down with a color-based quiz.</p>
+    <div class="quiz">
+      <p>What color do you associate with calmness?</p>
+      <label><input type="radio" name="color1" value="A"> A. Blue</label><br>
+      <label><input type="radio" name="color1" value="B"> B. Green</label><br>
+      <button onclick="submitQuiz()">Submit</button>
+    </div>
+  </div>
+
+  <script>
+    function submitQuiz() {
+      alert("Thank you for cooling down with this quiz!");
+    }
+  </script>
+</body>
+</html>

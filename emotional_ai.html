@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Capability Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+        }
+        .question-container {
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        #result {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Learning Capability Quiz</h1>
+
+<div id="quiz">
+    <div id="question-container-0" class="question-container">
+        <p id="question-text-0">What particles are found in the nucleus?</p>
+        <input type="radio" id="q0_option0" name="q0" value="0">
+        <label for="q0_option0">Electrons and Protons</label><br>
+        <input type="radio" id="q0_option1" name="q0" value="1">
+        <label for="q0_option1">Protons and Neutrons</label><br>
+        <input type="radio" id="q0_option2" name="q0" value="2">
+        <label for="q0_option2">Neutrons and Electrons</label><br>
+        <input type="radio" id="q0_option3" name="q0" value="3">
+        <label for="q0_option3">Protons only</label><br>
+    </div>
+    <!-- Additional questions can follow the same structure -->
+    <button onclick="submitQuiz()">Submit Answers</button>
+</div>
+
+<h2 id="result"></h2>
+
+<script>
+    const questions = [
+        {text: "What particles are found in the nucleus?", answer: "Protons and Neutrons", options: ["Electrons and Protons", "Protons and Neutrons", "Neutrons and Electrons", "Protons only"]},
+        {text: "Which force binds protons and neutrons?", answer: "Nuclear force", options: ["Gravitational force", "Electromagnetic force", "Nuclear force", "Weak force"]},
+        // Add more questions here
+    ];
+
+    let userAnswers = [];
+
+    function submitQuiz() {
+        userAnswers = [];
+        let correctAnswers = 0;
+
+        for (let i = 0; i < questions.length; i++) {
+            const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+            if (selectedOption) {
+                const selectedValue = selectedOption.value;
+                const correct = questions[i].answer === questions[i].options[selectedValue];
+                userAnswers.push(correct);
+                if (correct) correctAnswers++;
+            } else {
+                userAnswers.push(false);
+            }
+        }
+
+        displayResults(correctAnswers);
+    }
+
+    function displayResults(correctAnswers) {
+        const totalQuestions = questions.length;
+        const learnerType = classifyLearner(correctAnswers / totalQuestions);
+
+        const resultText = `Quiz Finished!<br>Your Score: ${correctAnswers}/${totalQuestions}<br>Learner Type: ${learnerType}`;
+        document.getElementById('result').innerHTML = resultText;
+    }
+
+    function classifyLearner(accuracy) {
+        if (accuracy >= 0.8) {
+            return "Advanced Learner - Highly Engaged";
+        } else if (accuracy >= 0.5) {
+            return "Active Learner - Steady Progress";
+        } else {
+            return "Passive Learner - Needs Improvement";
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hangman Game</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+      * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Roboto', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(to right, #ff9a9e, #fad0c4);
+      color: #333;
+      overflow: hidden;
+    }
+    #container {
+      text-align: center;
+      background: #ffffffdd;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      width: 80%;
+      max-width: 500px;
+    }
+    #wordDisplay {
+      font-size: 2.5rem;
+      letter-spacing: 0.2rem;
+      margin-bottom: 20px;
+      color: #ff6363;
+    }
+    #timer {
+      font-size: 1.5rem;
+      color: #333;
+      margin-top: 10px;
+    }
+    .letterButton {
+      margin: 5px;
+      padding: 12px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: white;
+      background-color: #333;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      animation: moveAcross 10s linear infinite;
+    }
+    .letterButton:hover {
+      background-color: #ff6363;
+    }
+    .letterButton.disabled {
+      background-color: #bbb;
+      cursor: not-allowed;
+    }
+    @keyframes moveAcross {
+      0% {
+        transform: translateX(-100%);
+      }
+      50% {
+        transform: translateX(100%);
+      }
+      100% {
+        transform: translateX(-100%);
+      }
+    }
+    #message {
+      font-size: 1.5rem;
+      color: #333;
+      margin-top: 20px;
+    }
+    #resetButton, #homeButton {
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 1rem;
+      background-color: #ff6363;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.2s ease;
+    }
+    #resetButton:hover, #homeButton:hover {
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <h1>🎉 Hangman Game 🎉</h1>
+    <div id="wordDisplay">_ _ _ _ _</div>
+    <div id="timer">Time Left: 120s</div>
+    <div id="letterButtons"></div>
+    <div id="message"></div>
+    <button id="resetButton" onclick="startGame()">New Game</button>
+    <button id="homeButton" onclick="goHome()">Go to Home</button>
+  </div>
+
+  <script>
+    const words = ["JAVASCRIPT", "PYTHON", "PROGRAMMING", "HTML", "CSS", "SOFTWARE", "DEVELOPER", "HANGMAN"];
+    let chosenWord;
+    let displayedWord;
+    let remainingGuesses;
+    const maxGuesses = 6;
+    const gameTime = 120; // Time in seconds
+    let timer;
+    let timeLeft;
+
+    function startGame() {
+      chosenWord = words[Math.floor(Math.random() * words.length)];
+      displayedWord = Array(chosenWord.length).fill("_");
+      remainingGuesses = maxGuesses;
+      timeLeft = gameTime;
+      document.getElementById("message").textContent = `Remaining Guesses: ${remainingGuesses}`;
+      displayWord();
+      setupLetterButtons();
+      startTimer();
+    }
+
+    function displayWord() {
+      document.getElementById("wordDisplay").textContent = displayedWord.join(" ");
+    }
+
+    function setupLetterButtons() {
+      const letterButtonsDiv = document.getElementById("letterButtons");
+      letterButtonsDiv.innerHTML = "";
+      for (let i = 65; i <= 90; i++) {
+        const letter = String.fromCharCode(i);
+        const button = document.createElement("button");
+        button.textContent = letter;
+        button.classList.add("letterButton");
+        button.onclick = () => handleGuess(letter, button);
+        letterButtonsDiv.appendChild(button);
+      }
+    }
+
+    function handleGuess(letter, button) {
+      button.classList.add("disabled");
+      button.disabled = true;
+      if (chosenWord.includes(letter)) {
+        for (let i = 0; i < chosenWord.length; i++) {
+          if (chosenWord[i] === letter) {
+            displayedWord[i] = letter;
+          }
+        }
+        displayWord();
+        checkWin();
+      } else {
+        remainingGuesses--;
+        document.getElementById("message").textContent = `Remaining Guesses: ${remainingGuesses}`;
+        checkLoss();
+      }
+    }
+
+    function checkWin() {
+      if (!displayedWord.includes("_")) {
+        document.getElementById("message").textContent = "You Won! 🎉";
+        disableAllButtons();
+        stopTimer();
+      }
+    }
+
+    function checkLoss() {
+      if (remainingGuesses === 0) {
+        document.getElementById("message").textContent = `You Lost! The word was: ${chosenWord}`;
+        disableAllButtons();
+        stopTimer();
+      }
+    }
+
+    function disableAllButtons() {
+      document.querySelectorAll(".letterButton").forEach(button => {
+        button.classList.add("disabled");
+        button.disabled = true;
+      });
+    }
+
+    function startTimer() {
+      clearInterval(timer); // Clear any previous timer
+      timer = setInterval(() => {
+        timeLeft--;
+        document.getElementById("timer").textContent = `Time Left: ${timeLeft}s`;
+        if (timeLeft <= 0) {
+          document.getElementById("message").textContent = "Time's up! You Lost!";
+          disableAllButtons();
+          stopTimer();
+        }
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timer);
+    }
+
+    function goHome() {
+      window.location.href = "index.html";  // Replace with your homepage URL
+    }
+
+    startGame();
+  </script>
+</body>
+</html>

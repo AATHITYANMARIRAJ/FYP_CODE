@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Are You Feeling?</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      text-align: center;
+      background: linear-gradient(135deg, #00ff7f, #2575fc); /* Blue to Purple Gradient */
+      color: #fff;
+      padding: 50px;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      color: #fff;
+      text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    .logo {
+      width: 150px;
+      margin-bottom: 30px;
+    }
+
+    .intro {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+      color: #fff;
+      font-weight: normal;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .stickers {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+      gap: 20px;
+    }
+
+    .sticker {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .sticker:hover {
+      transform: scale(1.15);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, 0.2);
+    }
+
+    .message {
+      margin-top: 30px;
+      font-size: 1.8rem;
+      color: #fff;
+      font-weight: bold;
+      transition: opacity 0.5s ease;
+      opacity: 0;
+    }
+
+    .message.show {
+      opacity: 1;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      50% {
+        transform: scale(1.1);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .sticker:active {
+      animation: pulse 0.6s ease-out;
+    }
+  </style>
+</head>
+<body>
+  <!-- Logo at the top of the page -->
+  <img src="SmartLearn.png" alt="SmartLearn Logo" class="logo">
+
+  <!-- Short introduction about the website -->
+  <div class="intro">
+    <p>Welcome to SmartLearn! We're here to help you explore your emotions and guide you toward personalized learning experiences based on your current mood.</p>
+    <p>Click on one of the stickers below to let us know how you're feeling today, and we'll help you on your learning journey!</p>
+  </div>
+
+  <h1>How are you feeling today?</h1>
+
+  <div class="stickers">
+    <img src="happy.jpg" alt="Happy" class="sticker" id="happy" title="Happy">
+    <img src="sad.jpg" alt="Sad" class="sticker" id="sad" title="Sad">
+    <img src="bored.jpg" alt="Bored" class="sticker" id="bored" title="Bored">
+    <img src="confused.jpg" alt="Confused" class="sticker" id="confused" title="Confused">
+  </div>
+
+  <div class="message" id="responseMessage"></div>
+
+  <script>
+    const stickers = document.querySelectorAll('.sticker');
+    const responseMessage = document.getElementById('responseMessage');
+
+    const feelingRedirects = {
+      Happy: 'happy.html',       // Redirect to happy.html when "Happy" is clicked
+      Sad: 'sad.html',           // Redirect to sad.html when "Sad" is clicked
+      Bored: 'bored.html',       // Redirect to bored.html when "Bored" is clicked
+      Confused: 'confused.html'  // Redirect to confused.html when "Confused" is clicked
+    };
+
+    stickers.forEach(sticker => {
+      sticker.addEventListener('click', (event) => {
+        const feeling = event.target.title;
+        responseMessage.textContent = `You are feeling ${feeling} today!`;
+
+        // Show the message with a smooth transition
+        responseMessage.classList.add('show');
+
+        // Redirect to the corresponding page based on the selected feeling
+        if (feelingRedirects[feeling]) {
+          setTimeout(() => {
+            window.location.href = feelingRedirects[feeling];
+          }, 1000); // Redirect after 1 second to let the message appear
+        } else {
+          responseMessage.textContent = `We couldn't determine how you're feeling. Please select a sticker.`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

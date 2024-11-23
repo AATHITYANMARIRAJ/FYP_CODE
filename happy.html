@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Feeling Happy</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(45deg, #ff6ec7, #ff8f00);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .card {
+      background-color: #fff;
+      padding: 20px;
+      width: 400px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      background: #fff;
+      border: 3px solid #ff6ec7;
+    }
+
+    h1 {
+      color: #ff6ec7;
+      font-size: 2.5rem;
+      font-family: 'Comic Sans MS', sans-serif;
+    }
+
+    .content {
+      font-size: 1.5rem;
+      color: #333;
+    }
+
+    .quiz {
+      margin-top: 20px;
+    }
+
+    .question {
+      margin-bottom: 15px;
+    }
+
+    .quiz button {
+      padding: 10px 20px;
+      background-color: #ff6ec7;
+      color: white;
+      border: none;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .quiz button:hover {
+      background-color: #ff8f00;
+      transform: scale(1.1);
+    }
+
+    .result {
+      font-size: 1.5rem;
+      color: #333;
+      margin-top: 20px;
+      display: none;
+    }
+
+    .progress-container {
+      width: 100%;
+      height: 20px;
+      background-color: #ddd;
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background-color: #ff6ec7;
+      border-radius: 10px;
+    }
+
+    .timer {
+      font-size: 1.2rem;
+      color: #ff8f00;
+      margin-top: 20px;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 15px;
+      z-index: -1;
+    }
+
+  </style>
+  <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="card">
+    <h1>You're Feeling Happy! 😊</h1>
+
+    <div class="content">
+      <p>Awesome! Let's dive into an advanced quiz on Nuclear Physics!</p>
+      <div class="quiz" id="quizContainer">
+        <div id="question1" class="question">
+          <p>Question 1: What is the liquid drop model of the nucleus?</p>
+          <label><input type="radio" name="q1" value="correct"> A. Nucleus as a liquid drop</label><br>
+          <label><input type="radio" name="q1" value="incorrect"> B. Nucleus as a solid</label><br>
+          <button onclick="submitQuestion(1)">Next</button>
+        </div>
+        <div id="question2" class="question" style="display: none;">
+          <p>Question 2: Which particle is located in the nucleus?</p>
+          <label><input type="radio" name="q2" value="incorrect"> A. Electron</label><br>
+          <label><input type="radio" name="q2" value="correct"> B. Proton</label><br>
+          <button onclick="submitQuestion(2)">Submit Quiz</button>
+        </div>
+      </div>
+      <div class="result" id="result"></div>
+
+      <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="timer" id="timer">Time left: 30 seconds</div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.0/dist/sweetalert2.all.min.js"></script>
+
+  <script>
+    let score = 0;
+    let timeoutID;
+    let timer;
+    let timeTaken = 30;
+    let answeredQuestions = 0;
+
+    function updateProgressBar(percentage) {
+      const progressBar = document.getElementById("progressBar");
+      progressBar.style.width = `${percentage}%`;
+    }
+
+    function startTimer() {
+      let timeLeft = 30;
+      timer = setInterval(function() {
+        timeLeft--;
+        document.getElementById("timer").textContent = `Time left: ${timeLeft} seconds`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          Swal.fire({
+            icon: 'info',
+            title: 'Time\'s up!',
+            text: 'You ran out of time!',
+            confirmButtonText: 'OK'
+          });
+          displayScore();
+        }
+      }, 1000);
+    }
+
+    function submitQuestion(questionNumber) {
+      clearTimeout(timeoutID);
+      const selectedAnswer = document.querySelector(`input[name="q${questionNumber}"]:checked`);
+      answeredQuestions++;
+
+      if (selectedAnswer && selectedAnswer.value === "correct") {
+        score++;
+        Swal.fire({
+          icon: 'success',
+          title: 'Correct!',
+          text: 'You chose the right answer!',
+          confirmButtonText: 'Next Question'
+        });
+      } else {
+        Swal.fire({
+          icon: 'error',
+          title: 'Incorrect!',
+          text: 'The answer was wrong. Try again!',
+          confirmButtonText: 'Next Question'
+        });
+      }
+
+      if (questionNumber === 1) {
+        document.getElementById("question1").style.display = "none";
+        document.getElementById("question2").style.display = "block";
+        updateProgressBar(50);
+      } else if (questionNumber === 2) {
+        displayScore();
+      }
+    }
+
+    function decisionTreeClassifier(score, timeTaken, accuracy) {
+      if (score === 2) {
+        if (timeTaken >= 20 && accuracy >= 0.9) {
+          return "Advanced Learner - Highly Engaged";
+        } else if (timeTaken >= 20 && accuracy < 0.9) {
+          return "Active Learner - Steady Progress";
+        } else if (timeTaken < 20 && accuracy >= 0.9) {
+          return "Rapid Learner - Quick but Accurate";
+        } else {
+          return "Passive Learner - Needs Improvement";
+        }
+      } else if (score === 1) {
+        if (timeTaken >= 15 && accuracy >= 0.7) {
+          return "Engaged Learner - Needs Focus";
+        } else if (timeTaken >= 15 && accuracy < 0.7) {
+          return "Struggling Learner - Low Accuracy";
+        } else {
+          return "Passive Learner - Lacks Engagement";
+        }
+      } else if (score === 0) {
+        if (timeTaken < 10) {
+          return "Beginner - Fast but Inaccurate";
+        } else if (accuracy < 0.5) {
+          return "Underperforming Learner - Needs Major Help";
+        } else {
+          return "Inactive Learner - Needs Motivation";
+        }
+      } else {
+        return "NEED MORE PRACTISE";
+      }
+    }
+
+    function displayScore() {
+      document.getElementById("quizContainer").style.display = "none";
+      const result = document.getElementById("result");
+      result.style.display = "block";
+      result.innerHTML = `Your score is ${score} out of 2!`;
+
+      const learnerType = decisionTreeClassifier(score, timeTaken, 0.85); // Passing accuracy as 0.85 as an example
+      result.innerHTML += `<br><strong>You are an ${learnerType}!</strong>`;
+
+      // Create and display the "Continue Learning" button
+      const continueButton = document.createElement("button");
+      continueButton.textContent = "Continue Learning";
+      continueButton.style.marginTop = "20px";
+      continueButton.style.padding = "10px 20px";
+      continueButton.style.backgroundColor = "#ff6ec7";
+      continueButton.style.border = "none";
+      continueButton.style.borderRadius = "25px";
+      continueButton.style.color = "white";
+      continueButton.style.fontSize = "1.2rem";
+      continueButton.style.cursor = "pointer";
+      continueButton.addEventListener("click", function() {
+        if (score === 0) {
+          window.location.href = "page1.html";
+        } else if (score === 1 || score === 2) {
+          window.location.href = "complex.html";
+        }
+      });
+
+      result.appendChild(continueButton);
+    }
+
+    startTimer();
+  </script>
+</body>
+</html>
